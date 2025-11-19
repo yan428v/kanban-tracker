@@ -1,12 +1,10 @@
-version: '3.7'
-
 services:
   pg_db:
     container_name: pg_db
     image: postgres:latest
     platform: linux/arm64
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
