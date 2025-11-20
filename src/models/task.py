@@ -39,6 +39,5 @@ class Task(Base, BaseModelMixin):
         back_populates="tasks"
     )
 
-
-def __repr__(self):
+    def __repr__(self):
         return f"<Task(id={self.id}, title='{self.title}', status={self.status})>"
