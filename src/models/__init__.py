@@ -4,7 +4,7 @@ from .task import Task, TaskStatus
 from .team_member import TeamMember
 from .comment import Comment
 from .team import Team
-
+from .board import Board
 __all__ = [
     "Base",
     "BaseModelMixin",
@@ -13,6 +13,7 @@ __all__ = [
     "TaskStatus",
     "Comment",
     "TeamMember",
-    "Team"
+    "Team",
+    "Board"
 
 ]

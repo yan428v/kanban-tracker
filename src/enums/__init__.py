@@ -1,3 +1,6 @@
-from .task import TaskStatus
-
-__all__ = ["TaskStatus"]
+from .task_status import TaskStatus
+from .board_colors import BoardColor
+__all__ = [
+    "TaskStatus",
+    "BoardColor"
+]

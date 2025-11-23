@@ -34,6 +34,12 @@ class Task(Base, BaseModelMixin):
         nullable=False
     )
 
+    column_id = Column(
+        UUID,
+        ForeignKey("column.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
     user = relationship(
         "User",
         back_populates="tasks"
@@ -44,6 +50,11 @@ class Task(Base, BaseModelMixin):
         back_populates="task",
         cascade="all, delete-orphan"
 
+    )
+
+    column = relationship(
+        "Column",
+        back_populates="tasks"
     )
 
     def __repr__(self):

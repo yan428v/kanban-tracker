@@ -46,6 +46,13 @@ class User(Base, BaseModelMixin):
 
     )
 
+    boards = relationship(
+        "Board",
+        back_populates="owner",
+        cascade="all, delete-orphan"
+
+    )
+
 
 
     def __repr__(self):

@@ -22,3 +22,10 @@ class Team(Base, BaseModelMixin):
         back_populates="team",
         cascade="all, delete-orphan"
     )
+
+    boards = relationship(
+        "Board",
+        back_populates="team",
+        cascade="all, delete-orphan"
+    )
+
