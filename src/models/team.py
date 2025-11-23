@@ -18,7 +18,7 @@ class Team(Base, BaseModelMixin):
     )
 
     team_members = relationship(
-        "TeamMembers",
+        "TeamMember",
         back_populates="team",
         cascade="all, delete-orphan"
     )

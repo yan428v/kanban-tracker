@@ -1,5 +1,6 @@
-from sqlalchemy import Column, String, Integer, UUID, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
 
 from .base import Base,BaseModelMixin
 
@@ -28,7 +29,7 @@ class BoardColumn(Base, BaseModelMixin): # хотел назвать Column, н�
         nullable=False
     )
 
-    bord = relationship(
+    board = relationship(
         "Board",
         back_populates="columns"
     )

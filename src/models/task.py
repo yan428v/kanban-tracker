@@ -1,7 +1,8 @@
 from sqlalchemy import Column, String, Enum, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from src.enums.task_status import TaskStatus
+
 from .base import Base, BaseModelMixin
-from src.enums import TaskStatus
 from sqlalchemy.dialects.postgresql import UUID
 
 class Task(Base, BaseModelMixin):
@@ -53,8 +54,13 @@ class Task(Base, BaseModelMixin):
     )
 
     column = relationship(
-        "Column",
+        "BoardColumn",
         back_populates="tasks"
+    )
+
+    task_members = relationship(
+        "TaskMember",
+        back_populates="task"
     )
 
     def __repr__(self):

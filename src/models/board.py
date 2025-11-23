@@ -29,7 +29,7 @@ class Board(Base, BaseModelMixin):
     color = Column(
         Enum(BoardColor),
         nullable=False,
-        default=BoardColor
+        default=BoardColor.WHITE
     )
 
     owner_id = Column(
@@ -41,7 +41,7 @@ class Board(Base, BaseModelMixin):
     team_id = Column(
         UUID,
         ForeignKey("team.id", ondelete="CASCADE"),
-        nullable=False
+        nullable=True
     )
 
     owner = relationship(
@@ -50,7 +50,7 @@ class Board(Base, BaseModelMixin):
     )
 
     columns = relationship(
-        "Column",
+        "BoardColumn",
         back_populates="board",
         cascade="all, delete-orphan"
     )
@@ -58,4 +58,10 @@ class Board(Base, BaseModelMixin):
     team = relationship(
         "Team",
         back_populates="boards"
+    )
+
+    permissions = relationship(
+        "Permission",
+        back_populates="board",
+        cascade="all, delete-orphan"
     )

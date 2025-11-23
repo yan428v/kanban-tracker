@@ -53,6 +53,15 @@ class User(Base, BaseModelMixin):
 
     )
 
+    permission = relationship(
+        "Permission",
+        back_populates="user"
+    )
+
+    task_members = relationship(
+        "TaskMember",
+        back_populates="user"
+    )
 
 
     def __repr__(self):
