@@ -1,11 +1,11 @@
-import enum
-
-from sqlalchemy import Column, String, Enum, DateTime
-from src.models import Base, BaseModelMixin
+from sqlalchemy import Column, String, Enum, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from .base import Base, BaseModelMixin
 from src.enums import TaskStatus
+from sqlalchemy.dialects.postgresql import UUID
 
 class Task(Base, BaseModelMixin):
-    __tablename__ = "tasks"
+    __tablename__ = "task"
 
     title = Column(
         String,
@@ -29,14 +29,21 @@ class Task(Base, BaseModelMixin):
     )
 
     user_id = Column(
-        Integer,
-        ForeignKey('users.id', ondelete='CASCADE'),
+        UUID,
+        ForeignKey('user.id', ondelete='CASCADE'),
         nullable=False
     )
 
     user = relationship(
         "User",
         back_populates="tasks"
+    )
+
+    comments = relationship(
+        "Comment",
+        back_populates="task",
+        cascade="all, delete-orphan"
+
     )
 
     def __repr__(self):

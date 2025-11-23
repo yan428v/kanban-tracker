@@ -1,9 +1,10 @@
 from sqlalchemy import Column, String
-from src.models import Base, BaseModelMixin
+from sqlalchemy.orm import relationship
+from .base import Base, BaseModelMixin
 
 
 class User(Base, BaseModelMixin):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     name = Column(
         String,
@@ -31,6 +32,21 @@ class User(Base, BaseModelMixin):
         back_populates="user",
         cascade="all, delete-orphan"
     )
+
+    comments = relationship(
+        "Comment",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+
+    team_member = relationship(
+        "TeamMember",
+        back_populates="user",
+        cascade="all, delete-orphan"
+
+    )
+
+
 
     def __repr__(self):
         return f"<User(id={self.id}, name='{self.name}', email={self.email})>"
