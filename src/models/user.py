@@ -17,16 +17,6 @@ class User(Base, BaseModelMixin):
         unique=True
     )
 
-    password_hash = Column(
-        String,
-        nullable=False
-    )
-
-    photo = Column(
-        String,
-        nullable=True
-    )
-
     tasks = relationship(
         "Task",
         back_populates="user",

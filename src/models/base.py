@@ -20,7 +20,7 @@ class BaseModelMixin:
     created_at = Column(
         DateTime,
         nullable=False,
-        default=datetime.utcnow # чатик пишет что лучше использовать func.now()
+        default=datetime.utcnow # todo чатик пишет что лучше использовать func.now()
     )
 
     updated_at = Column(

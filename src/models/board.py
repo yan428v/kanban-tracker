@@ -1,7 +1,6 @@
 
 from sqlalchemy import Column, String, Boolean, Enum, ForeignKey
 from sqlalchemy.orm import relationship
-from src.enums.board_colors import BoardColor
 from sqlalchemy.dialects.postgresql import UUID
 
 from .base import BaseModelMixin, Base
@@ -24,12 +23,6 @@ class Board(Base, BaseModelMixin):
         Boolean,
         nullable=False,
         default=False
-    )
-
-    color = Column(
-        Enum(BoardColor),
-        nullable=False,
-        default=BoardColor.WHITE
     )
 
     owner_id = Column(
