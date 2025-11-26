@@ -1,0 +1,34 @@
+from sqlalchemy import Column, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import UUID
+
+from .base import BaseModelMixin, Base
+
+
+class TaskMember(Base, BaseModelMixin):
+    __tablename__ = "task_members"
+
+
+    user_id = Column(
+        UUID,
+        ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    task_id = Column(
+        UUID,
+        ForeignKey("task.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    user = relationship(
+        "User",
+        back_populates="task_members"
+    )
+
+    task = relationship(
+        "Task",
+        back_populates="task_members"
+    )
+
+
