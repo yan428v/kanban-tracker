@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "kanban-tracker"
+version = "0.1.0"
+description = ""
+authors = ["Boris <soskinboris@gmail.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = "^0.121.0"
+uvicorn = "^0.38.0"
+ruff = "^0.14.3"
+mypy = "^1.18.2"
+dynaconf = "^3.2.12"
+sqlalchemy = "^2.0.44"
+alembic = "^1.17.1"
+asyncpg = "^0.30.0"
+greenlet = "^3.1.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"

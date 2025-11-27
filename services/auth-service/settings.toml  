@@ -1,0 +1,17 @@
+[app_settings]
+app_version = "0.1.0"
+app_name = "Kanban Auth Service"
+app_host = "0.0.0.0"
+app_port = 8001
+
+[db_settings]
+db_name = "auth_db"
+db_user = "auth_user"
+db_password = "auth_password"
+db_host = "localhost"
+db_port = 5433
+
+[jwt_settings]
+secret_key = "your-secret-key-change-this"
+algorithm = "HS256"
+access_token_expire_minutes = 30
