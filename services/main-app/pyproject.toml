@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "kanban-tracker"
+name = "kanban-main-app"
 version = "0.1.0"
-description = ""
+description = "Kanban Tracker Main Application"
 authors = ["Boris <soskinboris@gmail.com>"]
 readme = "README.md"
 packages = [{include = "src"}]
@@ -17,7 +17,6 @@ sqlalchemy = "^2.0.44"
 alembic = "^1.17.1"
 asyncpg = "^0.30.0"
 greenlet = "^3.1.0"
-poetry-core = ">=2.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]

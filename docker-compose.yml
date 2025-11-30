@@ -1,18 +1,32 @@
 services:
-  pg_db:
-    container_name: pg_db
+  main_db:
+    container_name: main_db
     image: postgres:latest
     platform: linux/arm64
-    volumes:
-      - postgres_data:/var/lib/postgresql
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      POSTGRES_DB: ${MAIN_DB_NAME}
+      POSTGRES_USER: ${MAIN_DB_USER}
+      POSTGRES_PASSWORD: ${MAIN_DB_PASSWORD}
     ports:
-      - ${DB_PORT}:5432
+      - "${MAIN_DB_PORT}:5432"
+    volumes:
+      - main_db_data:/var/lib/postgresql    # ← Changed from /var/lib/postgresql/data
+
+  auth_db:
+    container_name: auth_db
+    image: postgres:latest
+    platform: linux/arm64
+    environment:
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+    ports:
+      - "${AUTH_DB_PORT}:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql    # ← Changed from /var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  main_db_data:
+  auth_db_data:
 
 # run --name pg_test -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres:latest

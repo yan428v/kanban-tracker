@@ -156,6 +156,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+*/venv/
+*/ENV/
 
 # Spyder project settings
 .spyderproject
@@ -214,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Alembic
+*/alembic/versions/*.py
+!*/walembic/versions/.gitkeep

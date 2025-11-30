@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Enum, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from src.enums.task_status import TaskStatus
+from enums.task_status import TaskStatus
 
 from .base import Base, BaseModelMixin
 from sqlalchemy.dialects.postgresql import UUID
