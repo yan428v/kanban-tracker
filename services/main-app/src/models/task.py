@@ -31,7 +31,6 @@ class Task(Base, BaseModelMixin):
 
     user_id = Column(
         UUID,
-        ForeignKey('user.id', ondelete='CASCADE'),
         nullable=False
     )
 
@@ -39,11 +38,6 @@ class Task(Base, BaseModelMixin):
         UUID,
         ForeignKey("column.id", ondelete="CASCADE"),
         nullable=False
-    )
-
-    user = relationship(
-        "User",
-        back_populates="tasks"
     )
 
     comments = relationship(

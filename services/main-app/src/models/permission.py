@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -10,7 +10,6 @@ class Permission(Base, BaseModelMixin):
 
     user_id = Column(
         UUID,
-        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False
     )
 
@@ -20,12 +19,11 @@ class Permission(Base, BaseModelMixin):
         nullable=False
     )
 
-    user = relationship(
-        "User",
-        back_populates="permission"
-    )
-
     board = relationship(
         "Board",
         back_populates="permissions",
+    )
+
+    __table_args__ = (
+        UniqueConstraint('board_id', 'user_id', name='uq_permission_board_user'),
     )

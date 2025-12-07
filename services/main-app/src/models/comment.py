@@ -15,7 +15,6 @@ class Comment(Base, BaseModelMixin):
 
     user_id = Column(
         UUID,
-        ForeignKey('user.id', ondelete='CASCADE'),
         nullable=False
     )
 
@@ -23,11 +22,6 @@ class Comment(Base, BaseModelMixin):
         UUID,
         ForeignKey('task.id', ondelete='CASCADE'),
         nullable=False
-    )
-
-    user = relationship(
-        "User",
-        back_populates="comments"
     )
 
     task = relationship(

@@ -27,7 +27,6 @@ class Board(Base, BaseModelMixin):
 
     owner_id = Column(
         UUID,
-        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False
     )
 
@@ -35,11 +34,6 @@ class Board(Base, BaseModelMixin):
         UUID,
         ForeignKey("team.id", ondelete="CASCADE"),
         nullable=True
-    )
-
-    owner = relationship(
-        "User",
-        back_populates="boards",
     )
 
     columns = relationship(

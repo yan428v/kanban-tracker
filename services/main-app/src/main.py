@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from core.config import settings
 from api.v1.teams import router as teams_router
+from api.v1.team_members import router as team_members_router
 
 app = FastAPI(
     title=settings.app_settings.app_name,
@@ -8,6 +9,7 @@ app = FastAPI(
 )
 
 app.include_router(teams_router, prefix="/api/v1")
+app.include_router(team_members_router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
