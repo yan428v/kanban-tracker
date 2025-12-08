@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from models import Team
-from schemas.team import TeamCreateRequest, TeamUpdateRequest, TeamResponse
+from schemas.team import CreateTeamRequest, UpdateTeamRequest, TeamResponse
 from services.team import TeamService, get_team_service
 from exceptions import TeamNotFoundError
 
@@ -39,7 +39,7 @@ async def get_team(
 
 @router.post("/teams", response_model=TeamResponse, status_code=status.HTTP_201_CREATED)
 async def create_team(
-    team_data: TeamCreateRequest,
+    team_data: CreateTeamRequest,
     service: TeamService = Depends(get_team_service),
 ):
     team = await service.create(team_data)
@@ -49,7 +49,7 @@ async def create_team(
 @router.patch("/teams/{team_id}", response_model=TeamResponse)
 async def update_team(
     team_id: UUID,
-    team_data: TeamUpdateRequest,
+    team_data: UpdateTeamRequest,
     service: TeamService = Depends(get_team_service),
 ):
     try:

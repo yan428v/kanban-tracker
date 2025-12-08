@@ -5,12 +5,12 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class TeamCreateRequest(BaseModel):
+class CreateTeamRequest(BaseModel):
     name: str
     description: Optional[str] = None
 
 
-class TeamUpdateRequest(BaseModel):
+class UpdateTeamRequest(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
 

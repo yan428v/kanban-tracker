@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from models import Team
 from repositories.team import TeamRepository, get_team_repository
-from schemas.team import TeamCreateRequest, TeamUpdateRequest
+from schemas.team import CreateTeamRequest, UpdateTeamRequest
 
 
 class TeamService:
@@ -17,12 +17,12 @@ class TeamService:
     async def get_many(self, skip: int = 0, limit: int = 100) -> list[Team]:
         return await self.repository.get_all(skip=skip, limit=limit)
 
-    async def create(self, team_data: TeamCreateRequest) -> Team:
+    async def create(self, team_data: CreateTeamRequest) -> Team:
         team = Team(name=team_data.name, description=team_data.description)
         return await self.repository.create(team)
 
     async def update(
-        self, team_id: UUID, team_data: TeamUpdateRequest
+        self, team_id: UUID, team_data: UpdateTeamRequest
     ) -> Team:
         team = await self.repository.get_by_id(team_id)
 

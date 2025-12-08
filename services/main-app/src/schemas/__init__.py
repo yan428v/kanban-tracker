@@ -1,8 +1,8 @@
-from .team import TeamCreateRequest, TeamUpdateRequest, TeamResponse
+from .team import CreateTeamRequest, UpdateTeamRequest, TeamResponse
 
 __all__ = [
-    "TeamCreateRequest",
-    "TeamUpdateRequest",
+    "CreateTeamRequest",
+    "UpdateTeamRequest",
     "TeamResponse",
 ]
 
