@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Column
+from sqlalchemy import ForeignKey, Column, UniqueConstraint
 from sqlalchemy.orm import relationship
 from .base import BaseModelMixin, Base
 from sqlalchemy.dialects.postgresql import UUID
@@ -6,6 +6,9 @@ from sqlalchemy.dialects.postgresql import UUID
 
 class TeamMember(Base, BaseModelMixin):
     __tablename__ = "team_member"
+    __table_args__ = (
+        UniqueConstraint('user_id', 'team_id', name='uq_team_member_user_id_team_id'),
+    )
 
     team_id = Column(
         UUID,
