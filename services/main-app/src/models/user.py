@@ -1,58 +1,31 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+
 from .base import Base, BaseModelMixin
 
 
 class User(Base, BaseModelMixin):
     __tablename__ = "user"
 
-    name = Column(
-        String,
-        nullable=False
-    )
+    name = Column(String, nullable=False)
 
-    email = Column(
-        String,
-        nullable=False,
-        unique=True
-    )
+    email = Column(String, nullable=False, unique=True)
 
-    tasks = relationship(
-        "Task",
-        back_populates="user",
-        cascade="all, delete-orphan"
-    )
+    tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan")
 
     comments = relationship(
-        "Comment",
-        back_populates="user",
-        cascade="all, delete-orphan"
+        "Comment", back_populates="user", cascade="all, delete-orphan"
     )
 
     team_member = relationship(
-        "TeamMember",
-        back_populates="user",
-        cascade="all, delete-orphan"
-
+        "TeamMember", back_populates="user", cascade="all, delete-orphan"
     )
 
-    boards = relationship(
-        "Board",
-        back_populates="owner",
-        cascade="all, delete-orphan"
+    boards = relationship("Board", back_populates="owner", cascade="all, delete-orphan")
 
-    )
+    permission = relationship("Permission", back_populates="user")
 
-    permission = relationship(
-        "Permission",
-        back_populates="user"
-    )
-
-    task_members = relationship(
-        "TaskMember",
-        back_populates="user"
-    )
-
+    task_members = relationship("TaskMember", back_populates="user")
 
     def __repr__(self):
         return f"<User(id={self.id}, name='{self.name}', email={self.email})>"

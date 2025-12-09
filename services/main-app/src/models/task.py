@@ -1,67 +1,38 @@
-from sqlalchemy import Column, String, Enum, DateTime, ForeignKey
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
 from enums.task_status import TaskStatus
 
 from .base import Base, BaseModelMixin
-from sqlalchemy.dialects.postgresql import UUID
+
 
 class Task(Base, BaseModelMixin):
     __tablename__ = "task"
 
-    title = Column(
-        String,
-        nullable=False
-    )
+    title = Column(String, nullable=False)
 
-    description = Column(
-        String,
-        nullable=True
-    )
+    description = Column(String, nullable=True)
 
-    status = Column(
-        Enum(TaskStatus),
-        nullable=False,
-        default=TaskStatus.PENDING
-    )
+    status = Column(Enum(TaskStatus), nullable=False, default=TaskStatus.PENDING)
 
-    due_date = Column(
-        DateTime,
-        nullable=True
-    )
+    due_date = Column(DateTime, nullable=True)
 
-    user_id = Column(
-        UUID,
-        ForeignKey('user.id', ondelete='CASCADE'),
-        nullable=False
-    )
+    user_id = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
 
     column_id = Column(
-        UUID,
-        ForeignKey("column.id", ondelete="CASCADE"),
-        nullable=False
+        UUID, ForeignKey("column.id", ondelete="CASCADE"), nullable=False
     )
 
-    user = relationship(
-        "User",
-        back_populates="tasks"
-    )
+    user = relationship("User", back_populates="tasks")
 
     comments = relationship(
-        "Comment",
-        back_populates="task",
-        cascade="all, delete-orphan"
-
+        "Comment", back_populates="task", cascade="all, delete-orphan"
     )
 
-    column = relationship(
-        "BoardColumn",
-        back_populates="tasks"
-    )
+    column = relationship("BoardColumn", back_populates="tasks")
 
-    task_members = relationship(
-        "TaskMember",
-        back_populates="task"
-    )
+    task_members = relationship("TaskMember", back_populates="task")
 
     def __repr__(self):
         return f"<Task(id={self.id}, title='{self.title}', status={self.status})>"

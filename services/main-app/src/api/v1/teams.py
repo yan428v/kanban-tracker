@@ -1,19 +1,18 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from models import Team
-from schemas.team import CreateTeamRequest, UpdateTeamRequest, TeamResponse
-from services.team import TeamService, get_team_service
 from exceptions import TeamNotFoundError
+from models import Team
+from schemas.team import CreateTeamRequest, TeamResponse, UpdateTeamRequest
+from services.team import TeamService, get_team_service
 
 router = APIRouter()
 
 TEAM_NOT_FOUND_MESSAGE = "Team not found"
 
 
-@router.get("/teams", response_model=List[TeamResponse])
+@router.get("/teams", response_model=list[TeamResponse])
 async def list_teams(
     skip: int = 0,
     limit: int = 100,
@@ -30,10 +29,10 @@ async def get_team(
 ):
     try:
         team = await service.get(team_id)
-    except TeamNotFoundError:
+    except TeamNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=TEAM_NOT_FOUND_MESSAGE
-        )
+        ) from e
     return team_to_response(team)
 
 
@@ -54,10 +53,10 @@ async def update_team(
 ):
     try:
         team = await service.update(team_id, team_data)
-    except TeamNotFoundError:
+    except TeamNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=TEAM_NOT_FOUND_MESSAGE
-        )
+        ) from e
     return team_to_response(team)
 
 
@@ -68,10 +67,10 @@ async def delete_team(
 ):
     try:
         await service.delete(team_id)
-    except TeamNotFoundError:
+    except TeamNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=TEAM_NOT_FOUND_MESSAGE
-        )
+        ) from e
 
 
 def team_to_response(team: Team) -> TeamResponse:

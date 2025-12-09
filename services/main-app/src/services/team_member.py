@@ -1,4 +1,3 @@
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends
@@ -26,8 +25,8 @@ class TeamMemberService:
         self,
         skip: int = 0,
         limit: int = 100,
-        team_id: Optional[UUID] = None,
-        user_id: Optional[UUID] = None,
+        team_id: UUID | None = None,
+        user_id: UUID | None = None,
     ) -> list[TeamMember]:
         return await self.repository.get_many(
             skip=skip,

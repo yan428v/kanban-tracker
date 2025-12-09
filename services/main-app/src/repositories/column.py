@@ -1,35 +1,32 @@
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import BoardColumn
 from core.database import get_session
+from models import BoardColumn
 
 
 class ColumnRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_by_id(self, column_id: UUID) -> Optional[BoardColumn]:
+    async def get_by_id(self, column_id: UUID) -> BoardColumn | None:
         result = await self.db.execute(
-            select(BoardColumn)
-            .where(BoardColumn.id == column_id)
+            select(BoardColumn).where(BoardColumn.id == column_id)
         )
 
         return result.scalar_one_or_none()
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> list[BoardColumn]:
-        result = await self.db.execute(
-            select(BoardColumn)
-            .offset(skip)
-            .limit(limit))
+        result = await self.db.execute(select(BoardColumn).offset(skip).limit(limit))
 
         return result.scalars().all()
 
-    async def get_by_board_id(self, board_id: UUID, skip: int = 0, limit: int = 100) -> list[BoardColumn]:
+    async def get_by_board_id(
+        self, board_id: UUID, skip: int = 0, limit: int = 100
+    ) -> list[BoardColumn]:
         result = await self.db.execute(
             select(BoardColumn)
             .where(BoardColumn.board_id == board_id)

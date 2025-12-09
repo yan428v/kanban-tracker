@@ -1,13 +1,14 @@
 from .base import Base, BaseModelMixin
-from .user import User
-from .task import Task, TaskStatus
-from .team_member import TeamMember
-from .comment import Comment
-from .team import Team
 from .board import Board
 from .column import BoardColumn
-from .task_members import TaskMember
+from .comment import Comment
 from .permission import Permission
+from .task import Task, TaskStatus
+from .task_members import TaskMember
+from .team import Team
+from .team_member import TeamMember
+from .user import User
+
 __all__ = [
     "Base",
     "BaseModelMixin",
@@ -20,5 +21,5 @@ __all__ = [
     "Board",
     "BoardColumn",
     "TaskMember",
-    "Permission"
+    "Permission",
 ]

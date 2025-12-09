@@ -1,50 +1,41 @@
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Task
 from core.database import get_session
+from models import Task
 
 
 class TaskRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_by_id(self, task_id: UUID) -> Optional[Task]:
-        result = await self.db.execute(
-            select(Task)
-            .where(Task.id == task_id)
-        )
+    async def get_by_id(self, task_id: UUID) -> Task | None:
+        result = await self.db.execute(select(Task).where(Task.id == task_id))
 
         return result.scalar_one_or_none()
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> list[Task]:
-        result = await self.db.execute(
-            select(Task)
-            .offset(skip)
-            .limit(limit))
+        result = await self.db.execute(select(Task).offset(skip).limit(limit))
 
         return result.scalars().all()
 
-    async def get_by_user_id(self, user_id: UUID, skip: int = 0, limit: int = 100) -> list[Task]:
+    async def get_by_user_id(
+        self, user_id: UUID, skip: int = 0, limit: int = 100
+    ) -> list[Task]:
         result = await self.db.execute(
-            select(Task)
-            .where(Task.user_id == user_id)
-            .offset(skip)
-            .limit(limit)
+            select(Task).where(Task.user_id == user_id).offset(skip).limit(limit)
         )
 
         return result.scalars().all()
 
-    async def get_by_column_id(self, column_id: UUID, skip: int = 0, limit: int = 100) -> list[Task]:
+    async def get_by_column_id(
+        self, column_id: UUID, skip: int = 0, limit: int = 100
+    ) -> list[Task]:
         result = await self.db.execute(
-            select(Task)
-            .where(Task.column_id == column_id)
-            .offset(skip)
-            .limit(limit)
+            select(Task).where(Task.column_id == column_id).offset(skip).limit(limit)
         )
 
         return result.scalars().all()
