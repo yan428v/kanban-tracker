@@ -1,4 +1,3 @@
-from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
@@ -10,12 +9,12 @@ from services.team_member import TeamMemberService, get_team_member_service
 router = APIRouter()
 
 
-@router.get("/team-members", response_model=List[TeamMemberResponse])
+@router.get("/team-members", response_model=list[TeamMemberResponse])
 async def list_team_members(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=0, le=1000),
-    team_id: Optional[UUID] = None,
-    user_id: Optional[UUID] = None,
+    team_id: UUID | None = None,
+    user_id: UUID | None = None,
     service: TeamMemberService = Depends(get_team_member_service),
 ):
     members = await service.get_many(

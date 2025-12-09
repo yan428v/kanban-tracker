@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -7,17 +6,17 @@ from pydantic import BaseModel
 
 class CreateTeamRequest(BaseModel):
     name: str
-    description: Optional[str] = None
+    description: str | None = None
 
 
 class UpdateTeamRequest(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
 
 
 class TeamResponse(BaseModel):
     id: UUID
     name: str
-    description: Optional[str]
+    description: str | None
     created_at: datetime
     updated_at: datetime

@@ -10,14 +10,63 @@ packages = [{include = "src"}]
 python = "^3.13"
 fastapi = "^0.121.0"
 uvicorn = "^0.38.0"
-ruff = "^0.14.3"
-mypy = "^1.18.2"
 dynaconf = "^3.2.12"
 sqlalchemy = "^2.0.44"
 alembic = "^1.17.1"
 asyncpg = "^0.30.0"
 greenlet = "^3.1.0"
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.14.3"
+mypy = "^1.18.2"
+pre-commit = "^4.0.1"
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.2"
+httpx = "^0.28.1"
+
 [build-system]
 requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+# Конфигурация Ruff
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# Конфигурация MyPy
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+# Конфигурация Pytest
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"

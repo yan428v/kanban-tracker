@@ -21,9 +21,7 @@ class TeamService:
         team = Team(name=team_data.name, description=team_data.description)
         return await self.repository.create(team)
 
-    async def update(
-        self, team_id: UUID, team_data: UpdateTeamRequest
-    ) -> Team:
+    async def update(self, team_id: UUID, team_data: UpdateTeamRequest) -> Team:
         team = await self.repository.get_by_id(team_id)
 
         if team_data.name is not None:

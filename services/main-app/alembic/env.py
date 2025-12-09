@@ -1,10 +1,10 @@
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from alembic import context
 from core.config import db_config
 from models import Base
 
@@ -52,6 +52,7 @@ async def run_async_migrations() -> None:
 
 def run_migrations_online() -> None:
     import asyncio
+
     asyncio.run(run_async_migrations())
 
 

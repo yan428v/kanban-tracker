@@ -1,8 +1,7 @@
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends
-from sqlalchemy import select, delete
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_session
@@ -24,8 +23,8 @@ class TeamMemberRepository:
         self,
         skip: int = 0,
         limit: int = 100,
-        team_id: Optional[UUID] = None,
-        user_id: Optional[UUID] = None,
+        team_id: UUID | None = None,
+        user_id: UUID | None = None,
     ) -> list[TeamMember]:
         query = select(TeamMember)
         if team_id is not None:
@@ -38,8 +37,7 @@ class TeamMemberRepository:
 
     async def delete(self, team_id: UUID, user_id: UUID) -> None:
         stmt = delete(TeamMember).where(
-            TeamMember.team_id == team_id,
-            TeamMember.user_id == user_id
+            TeamMember.team_id == team_id, TeamMember.user_id == user_id
         )
         await self.db.execute(stmt)
         await self.db.commit()

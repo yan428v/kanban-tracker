@@ -4,9 +4,9 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Team
 from core.database import get_session
 from exceptions import TeamNotFoundError
+from models import Team
 
 
 class TeamRepository:
@@ -14,21 +14,14 @@ class TeamRepository:
         self.db = db
 
     async def get_by_id(self, team_id: UUID) -> Team:
-        result = await self.db.execute(
-            select(Team)
-            .where(Team.id == team_id)
-        )
+        result = await self.db.execute(select(Team).where(Team.id == team_id))
         team = result.scalar_one_or_none()
         if not team:
             raise TeamNotFoundError(team_id)
         return team
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> list[Team]:
-        result = await self.db.execute(
-            select(Team)
-            .offset(skip)
-            .limit(limit)
-        )
+        result = await self.db.execute(select(Team).offset(skip).limit(limit))
         return result.scalars().all()
 
     async def create(self, team: Team) -> Team:
@@ -51,4 +44,3 @@ async def get_team_repository(
     db: AsyncSession = Depends(get_session),
 ) -> TeamRepository:
     return TeamRepository(db)
-
