@@ -1,3 +1,4 @@
+from .comment import CommentCreate, CommentOut, CommentUpdate
 from .team import CreateTeamRequest, TeamResponse, UpdateTeamRequest
 from .team_member import CreateTeamMemberRequest, TeamMemberResponse
 
@@ -7,4 +8,7 @@ __all__ = [
     "TeamResponse",
     "CreateTeamMemberRequest",
     "TeamMemberResponse",
+    "CommentCreate",
+    "CommentUpdate",
+    "CommentOut",
 ]
