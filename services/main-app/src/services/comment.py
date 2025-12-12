@@ -1,11 +1,10 @@
 from uuid import UUID
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 
+from src.exceptions import CommentNotFoundError
 from src.repositories import CommentRepository, get_comment_repository
 from src.schemas import CommentCreate, CommentOut, CommentUpdate
-
-COMMENT_NOT_FOUND_MESSAGE = "Comment not found"
 
 
 class CommentService:
@@ -21,9 +20,7 @@ class CommentService:
     async def get_by_id(self, comment_id: UUID) -> CommentOut:
         comment = await self.repository.get(comment_id)
         if comment is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=COMMENT_NOT_FOUND_MESSAGE
-            )
+            raise CommentNotFoundError(comment_id)
         return comment
 
     async def create(self, comment_data: CommentCreate) -> CommentOut:
@@ -46,17 +43,13 @@ class CommentService:
 
         comment = await self.repository.update(comment_id, **update_dict)
         if comment is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=COMMENT_NOT_FOUND_MESSAGE
-            )
+            raise CommentNotFoundError(comment_id)
         return comment
 
     async def delete(self, comment_id: UUID) -> None:
         deleted = await self.repository.delete(comment_id)
         if not deleted:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=COMMENT_NOT_FOUND_MESSAGE
-            )
+            raise CommentNotFoundError(comment_id)
 
 
 async def get_comment_service(
