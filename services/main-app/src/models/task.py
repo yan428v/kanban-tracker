@@ -18,6 +18,8 @@ class Task(Base, BaseModelMixin):
 
     due_date = Column(DateTime, nullable=True)
 
+    completed_at = Column(DateTime, nullable=True)
+
     user_id = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
 
     column_id = Column(
