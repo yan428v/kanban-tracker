@@ -15,3 +15,12 @@ class TeamMemberNotFoundError(Exception):
 
     def __str__(self):
         return f"Team member with team_id {self.team_id} and user_id {self.user_id} not found"
+
+
+class InvalidCredentialsError(Exception):
+    def __init__(self, detail: str = "Could not validate credentials"):
+        self.detail = detail
+        super().__init__()
+
+    def __str__(self):
+        return self.detail

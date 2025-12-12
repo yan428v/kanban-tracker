@@ -1,21 +1,16 @@
 import re
+from datetime import datetime
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 
 class UserBase(BaseModel):
+    name: str
     email: EmailStr
 
 
-class UserResponse(UserBase):
-    status: bool
-    full_name: str | None = None
-    username: str | None = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class UserRegistrate(UserBase):
+class UserCreate(UserBase):
     password: str
 
     @field_validator("password")
@@ -45,6 +40,19 @@ class UserRegistrate(UserBase):
             raise ValueError(f"Пароль должен содержать: {', '.join(errors)}")
 
         return v
+
+
+class UserUpdate(BaseModel):
+    name: str | None = None
+    email: EmailStr | None = None
+
+
+class UserResponse(UserBase):
+    id: UUID
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserInDB(UserResponse):
