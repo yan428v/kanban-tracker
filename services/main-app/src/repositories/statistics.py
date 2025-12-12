@@ -48,7 +48,8 @@ class StatisticsRepository:
         return [{"user_id": user_id, "count": count} for user_id, count in rows]
 
     async def get_due_date_health(self) -> dict[str, int]:
-        now = datetime.now(UTC)
+        now_utc = datetime.now(UTC)
+        now = now_utc.replace(tzinfo=None)
         due_soon_threshold = now + timedelta(days=7)
 
         overdue_result = await self.db.execute(
@@ -79,47 +80,6 @@ class StatisticsRepository:
             "due_soon_count": due_soon_result.scalar() or 0,
             "missing_due_date_count": missing_due_date_result.scalar() or 0,
         }
-
-    async def get_completed_history(self, weeks: int = 12) -> list[dict]:
-        now = datetime.now(UTC).replace(tzinfo=None)
-        current_week_start = now - timedelta(days=now.weekday())
-        current_week_start = current_week_start.replace(hour=0, minute=0, second=0, microsecond=0)
-
-        weeks_back = weeks - 1
-        start_date = current_week_start - timedelta(weeks=weeks_back)
-
-        result = await self.db.execute(
-            select(
-                func.date_trunc("week", Task.completed_at).label("week_start"),
-                func.count(Task.id).label("completed_count"),
-            )
-            .where(
-                and_(
-                    Task.completed_at.isnot(None),
-                    Task.completed_at >= start_date,
-                    Task.completed_at < current_week_start + timedelta(weeks=1),
-                )
-            )
-            .group_by(func.date_trunc("week", Task.completed_at))
-            .order_by(func.date_trunc("week", Task.completed_at))
-        )
-
-        rows = result.all()
-        week_counts = {}
-        for row in rows:
-            week_start = row.week_start
-            if week_start.tzinfo is not None:
-                week_start = week_start.replace(tzinfo=None)
-            week_counts[week_start] = row.completed_count
-
-        history = []
-        for i in range(weeks):
-            week_start = start_date + timedelta(weeks=i)
-            count = week_counts.get(week_start, 0)
-            history.append({"week_start": week_start, "completed_count": count})
-
-        return history
-
 
 async def get_statistics_repository(
     db: AsyncSession = Depends(get_session),

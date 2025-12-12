@@ -5,7 +5,6 @@ from repositories.statistics import (
     get_statistics_repository,
 )
 from schemas.statistics import (
-    CompletedHistoryPoint,
     DueDateHealthResponse,
     EntityCountsResponse,
     StatisticsResponse,
@@ -23,7 +22,6 @@ class StatisticsService:
         tasks_by_status = await self.repository.get_tasks_by_status()
         tasks_by_assignee_data = await self.repository.get_tasks_by_assignee()
         due_date_health_data = await self.repository.get_due_date_health()
-        completed_history_data = await self.repository.get_completed_history()
 
         entity_counts = EntityCountsResponse(**entity_counts_data)
 
@@ -38,15 +36,10 @@ class StatisticsService:
 
         due_date_health = DueDateHealthResponse(**due_date_health_data)
 
-        completed_history = [
-            CompletedHistoryPoint(**item) for item in completed_history_data
-        ]
-
         return StatisticsResponse(
             entity_counts=entity_counts,
             work_distribution=work_distribution,
             due_date_health=due_date_health,
-            completed_history=completed_history,
         )
 
 

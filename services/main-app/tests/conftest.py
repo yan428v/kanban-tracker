@@ -72,5 +72,5 @@ async def cleanup_db(db_session):
     )
     tables = [row[0] for row in result]
     for table in tables:
-        await db_session.execute(text(f"TRUNCATE TABLE {table} CASCADE"))
+        await db_session.execute(text(f'TRUNCATE TABLE "{table}" CASCADE'))
     await db_session.commit()

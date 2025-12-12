@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models import Board, BoardColumn, Comment, Task, Team, User
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(loop_scope="session")
 async def test_entity_counts_no_data(test_client: AsyncClient):
     response = await test_client.get("/api/v1/statistics")
     assert response.status_code == 200
@@ -20,7 +20,7 @@ async def test_entity_counts_no_data(test_client: AsyncClient):
     }
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(loop_scope="session")
 async def test_entity_counts_multiple_entities(
     test_client: AsyncClient, db_session: AsyncSession
 ):

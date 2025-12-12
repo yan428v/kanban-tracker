@@ -1,4 +1,3 @@
-from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -28,14 +27,7 @@ class DueDateHealthResponse(BaseModel):
     missing_due_date_count: int
 
 
-class CompletedHistoryPoint(BaseModel):
-    week_start: datetime
-    completed_count: int
-
-
 class StatisticsResponse(BaseModel):
     entity_counts: EntityCountsResponse
     work_distribution: WorkDistributionResponse
     due_date_health: DueDateHealthResponse
-    completed_history: list[CompletedHistoryPoint]
-
