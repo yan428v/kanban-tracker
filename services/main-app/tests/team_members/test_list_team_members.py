@@ -37,21 +37,21 @@ async def seeded_team_members_data(db_session: AsyncSession):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_no_team_members(test_client: AsyncClient):
-    response = await test_client.get("/api/v1/team-members")
+async def test_no_team_members(default_auth_client: AsyncClient):
+    response = await default_auth_client.get("/api/v1/team-members")
     assert response.status_code == 200
     assert response.json() == []
 
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_two_team_members_no_params(
-    test_client: AsyncClient, seeded_team_members_data
+    default_auth_client: AsyncClient, seeded_team_members_data
 ):
     members = seeded_team_members_data["members"]
     member1 = members[0]
     member2 = members[1]
 
-    response = await test_client.get("/api/v1/team-members")
+    response = await default_auth_client.get("/api/v1/team-members")
     assert response.status_code == 200
     data = response.json()
 
@@ -76,19 +76,19 @@ async def test_two_team_members_no_params(
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_skip_10(test_client: AsyncClient, seeded_team_members_data):
-    response = await test_client.get("/api/v1/team-members?skip=15")
+async def test_skip_10(default_auth_client: AsyncClient, seeded_team_members_data):
+    response = await default_auth_client.get("/api/v1/team-members?skip=15")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 100
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_limit_1(test_client: AsyncClient, seeded_team_members_data):
+async def test_limit_1(default_auth_client: AsyncClient, seeded_team_members_data):
     members = seeded_team_members_data["members"]
     member1 = members[0]
 
-    response = await test_client.get("/api/v1/team-members?limit=1")
+    response = await default_auth_client.get("/api/v1/team-members?limit=1")
     assert response.status_code == 200
     data = response.json()
 
@@ -105,28 +105,28 @@ async def test_limit_1(test_client: AsyncClient, seeded_team_members_data):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_limit_0(test_client: AsyncClient, seeded_team_members_data):
-    response = await test_client.get("/api/v1/team-members?limit=0")
+async def test_limit_0(default_auth_client: AsyncClient, seeded_team_members_data):
+    response = await default_auth_client.get("/api/v1/team-members?limit=0")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 100
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_limit_1001(test_client: AsyncClient, seeded_team_members_data):
-    response = await test_client.get("/api/v1/team-members?limit=1001")
+async def test_limit_1001(default_auth_client: AsyncClient, seeded_team_members_data):
+    response = await default_auth_client.get("/api/v1/team-members?limit=1001")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1000
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_skip_0(test_client: AsyncClient, seeded_team_members_data):
+async def test_skip_0(default_auth_client: AsyncClient, seeded_team_members_data):
     members = seeded_team_members_data["members"]
     member1 = members[0]
     member2 = members[1]
 
-    response = await test_client.get("/api/v1/team-members?skip=0")
+    response = await default_auth_client.get("/api/v1/team-members?skip=0")
     assert response.status_code == 200
     data = response.json()
 
@@ -150,12 +150,14 @@ async def test_skip_0(test_client: AsyncClient, seeded_team_members_data):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_skip_negative(test_client: AsyncClient, seeded_team_members_data):
+async def test_skip_negative(
+    default_auth_client: AsyncClient, seeded_team_members_data
+):
     members = seeded_team_members_data["members"]
     member1 = members[0]
     member2 = members[1]
 
-    response = await test_client.get("/api/v1/team-members?skip=-1")
+    response = await default_auth_client.get("/api/v1/team-members?skip=-1")
     assert response.status_code == 200
     data = response.json()
 

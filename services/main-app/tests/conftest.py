@@ -6,6 +6,10 @@ from httpx import AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from auth.jwt import create_access_token
+from auth.security import hash_password
+from models import User
+
 
 @dataclass
 class TestSettings:
@@ -55,8 +59,31 @@ async def db_session(db_engine):
 
 
 @pytest.fixture
-async def test_client(app_url):
-    async with AsyncClient(base_url=app_url, timeout=30.0) as client:
+async def default_auth_user(db_session):
+    user = User(
+        name="Default Auth User",
+        email="default-auth-user@test.com",
+        hashed_password=hash_password("testpassword123"),
+    )
+    db_session.add(user)
+    await db_session.commit()
+    await db_session.refresh(user)
+    return user
+
+
+def create_auth_client_for_user(app_url: str, user: User) -> AsyncClient:
+    token = create_access_token(user.id)
+    return AsyncClient(
+        base_url=app_url,
+        timeout=30.0,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+
+@pytest.fixture
+async def default_auth_client(app_url, default_auth_user):
+    client = create_auth_client_for_user(app_url, default_auth_user)
+    async with client:
         yield client
 
 

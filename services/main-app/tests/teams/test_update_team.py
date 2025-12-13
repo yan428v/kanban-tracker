@@ -8,9 +8,9 @@ from models import Team
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_update_team_not_found(test_client: AsyncClient):
+async def test_update_team_not_found(default_auth_client: AsyncClient):
     non_existent_id = uuid.uuid4()
-    response = await test_client.patch(
+    response = await default_auth_client.patch(
         f"/api/v1/teams/{non_existent_id}", json={"name": "Updated Name"}
     )
     assert response.status_code == 404
@@ -19,7 +19,7 @@ async def test_update_team_not_found(test_client: AsyncClient):
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_team_no_updates(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Original Name", description="Original Description")
     db_session.add(team)
@@ -28,7 +28,7 @@ async def test_update_team_no_updates(
 
     original_created_at = team.created_at
 
-    response = await test_client.patch(f"/api/v1/teams/{team.id}", json={})
+    response = await default_auth_client.patch(f"/api/v1/teams/{team.id}", json={})
     assert response.status_code == 200
     data = response.json()
 
@@ -50,7 +50,7 @@ async def test_update_team_no_updates(
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_team_name_only(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Original Name", description="Original Description")
     db_session.add(team)
@@ -59,7 +59,7 @@ async def test_update_team_name_only(
 
     original_created_at = team.created_at
 
-    response = await test_client.patch(
+    response = await default_auth_client.patch(
         f"/api/v1/teams/{team.id}", json={"name": "Updated Name"}
     )
     assert response.status_code == 200
@@ -94,7 +94,7 @@ async def test_update_team_name_only(
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_team_description_only(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Original Name", description="Original Description")
     db_session.add(team)
@@ -103,7 +103,7 @@ async def test_update_team_description_only(
 
     original_created_at = team.created_at
 
-    response = await test_client.patch(
+    response = await default_auth_client.patch(
         f"/api/v1/teams/{team.id}", json={"description": "Updated Description"}
     )
     assert response.status_code == 200
@@ -138,7 +138,7 @@ async def test_update_team_description_only(
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_update_team_multiple_fields(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Original Name", description="Original Description")
     db_session.add(team)
@@ -147,7 +147,7 @@ async def test_update_team_multiple_fields(
 
     original_created_at = team.created_at
 
-    response = await test_client.patch(
+    response = await default_auth_client.patch(
         f"/api/v1/teams/{team.id}",
         json={"name": "Updated Name", "description": "Updated Description"},
     )

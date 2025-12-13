@@ -1,5 +1,6 @@
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.security import hash_password
@@ -7,23 +8,31 @@ from models import Board, BoardColumn, Comment, Task, Team, User
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_entity_counts_no_data(test_client: AsyncClient):
-    response = await test_client.get("/api/v1/statistics")
+async def test_entity_counts_no_data(
+    default_auth_client: AsyncClient,
+    db_session: AsyncSession,
+    default_auth_user: User,
+):
+    response = await default_auth_client.get("/api/v1/statistics")
     assert response.status_code == 200
 
     data = response.json()
     assert data["entity_counts"] == {
         "teams": 0,
-        "users": 0,
+        "users": 1,
         "boards": 0,
         "tasks": 0,
         "comments": 0,
     }
 
+    result = await db_session.execute(select(User))
+    user = result.scalar_one()
+    assert user.email == default_auth_user.email
+
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_entity_counts_multiple_entities(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     users = [
         User(
@@ -65,14 +74,14 @@ async def test_entity_counts_multiple_entities(
     db_session.add_all(comments)
     await db_session.commit()
 
-    response = await test_client.get("/api/v1/statistics")
+    response = await default_auth_client.get("/api/v1/statistics")
     assert response.status_code == 200
 
     data = response.json()
     counts = data["entity_counts"]
 
     assert counts["teams"] == 2
-    assert counts["users"] == 3
+    assert counts["users"] == 4
     assert counts["boards"] == 4
     assert counts["tasks"] == 4
     assert counts["comments"] == 5

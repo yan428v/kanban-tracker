@@ -2,8 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
+from auth.dependencies import get_current_user
 from exceptions import TeamNotFoundError
-from models import Team
+from models import Team, User
 from schemas.team import CreateTeamRequest, TeamResponse, UpdateTeamRequest
 from services.team import TeamService, get_team_service
 
@@ -17,6 +18,7 @@ async def list_teams(
     skip: int | None = Query(None),
     limit: int | None = Query(None),
     service: TeamService = Depends(get_team_service),
+    current_user: User = Depends(get_current_user),
 ):
     if skip is None:
         skip = 0
@@ -39,6 +41,7 @@ async def list_teams(
 async def get_team(
     team_id: UUID,
     service: TeamService = Depends(get_team_service),
+    current_user: User = Depends(get_current_user),
 ):
     try:
         team = await service.get(team_id)
@@ -53,6 +56,7 @@ async def get_team(
 async def create_team(
     team_data: CreateTeamRequest,
     service: TeamService = Depends(get_team_service),
+    current_user: User = Depends(get_current_user),
 ):
     team = await service.create(team_data)
     return team_to_response(team)
@@ -63,6 +67,7 @@ async def update_team(
     team_id: UUID,
     team_data: UpdateTeamRequest,
     service: TeamService = Depends(get_team_service),
+    current_user: User = Depends(get_current_user),
 ):
     try:
         team = await service.update(team_id, team_data)
@@ -77,6 +82,7 @@ async def update_team(
 async def delete_team(
     team_id: UUID,
     service: TeamService = Depends(get_team_service),
+    current_user: User = Depends(get_current_user),
 ):
     try:
         await service.delete(team_id)

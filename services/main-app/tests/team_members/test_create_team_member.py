@@ -10,9 +10,11 @@ from models import Team, TeamMember, User
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_create_team_member_no_team_id(test_client: AsyncClient):
+async def test_create_team_member_no_team_id(default_auth_client: AsyncClient):
     user_id = str(uuid.uuid4())
-    response = await test_client.post("/api/v1/team-members", json={"user_id": user_id})
+    response = await default_auth_client.post(
+        "/api/v1/team-members", json={"user_id": user_id}
+    )
     assert response.status_code == 422
     data = response.json()
     expected_response = {
@@ -29,9 +31,11 @@ async def test_create_team_member_no_team_id(test_client: AsyncClient):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_create_team_member_no_user_id(test_client: AsyncClient):
+async def test_create_team_member_no_user_id(default_auth_client: AsyncClient):
     team_id = str(uuid.uuid4())
-    response = await test_client.post("/api/v1/team-members", json={"team_id": team_id})
+    response = await default_auth_client.post(
+        "/api/v1/team-members", json={"team_id": team_id}
+    )
     assert response.status_code == 422
     data = response.json()
     expected_response = {
@@ -49,7 +53,7 @@ async def test_create_team_member_no_user_id(test_client: AsyncClient):
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_create_team_member_already_exists(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Test Team")
     db_session.add(team)
@@ -71,7 +75,7 @@ async def test_create_team_member_already_exists(
     await db_session.commit()
     await db_session.refresh(team_member)
 
-    response = await test_client.post(
+    response = await default_auth_client.post(
         "/api/v1/team-members",
         json={"team_id": str(team.id), "user_id": str(user.id)},
     )
@@ -84,7 +88,7 @@ async def test_create_team_member_already_exists(
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_create_team_member_nonexistent_team(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     hashed_password = hash_password("password")
     user = User(
@@ -97,7 +101,7 @@ async def test_create_team_member_nonexistent_team(
     await db_session.refresh(user)
 
     nonexistent_team_id = uuid.uuid4()
-    response = await test_client.post(
+    response = await default_auth_client.post(
         "/api/v1/team-members",
         json={"team_id": str(nonexistent_team_id), "user_id": str(user.id)},
     )
@@ -108,7 +112,7 @@ async def test_create_team_member_nonexistent_team(
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_create_team_member_nonexistent_user(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Test Team")
     db_session.add(team)
@@ -116,7 +120,7 @@ async def test_create_team_member_nonexistent_user(
     await db_session.refresh(team)
 
     nonexistent_user_id = uuid.uuid4()
-    response = await test_client.post(
+    response = await default_auth_client.post(
         "/api/v1/team-members",
         json={"team_id": str(team.id), "user_id": str(nonexistent_user_id)},
     )
@@ -127,7 +131,7 @@ async def test_create_team_member_nonexistent_user(
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_create_team_member_success(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Test Team")
     db_session.add(team)
@@ -144,7 +148,7 @@ async def test_create_team_member_success(
     await db_session.commit()
     await db_session.refresh(user)
 
-    response = await test_client.post(
+    response = await default_auth_client.post(
         "/api/v1/team-members",
         json={"team_id": str(team.id), "user_id": str(user.id)},
     )

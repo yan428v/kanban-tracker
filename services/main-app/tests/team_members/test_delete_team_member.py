@@ -10,9 +10,9 @@ from models import Team, TeamMember, User
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_delete_team_member_no_team_id(test_client: AsyncClient):
+async def test_delete_team_member_no_team_id(default_auth_client: AsyncClient):
     user_id = str(uuid.uuid4())
-    response = await test_client.request(
+    response = await default_auth_client.request(
         method="DELETE", url="/api/v1/team-members", json={"user_id": user_id}
     )
     assert response.status_code == 400
@@ -21,9 +21,9 @@ async def test_delete_team_member_no_team_id(test_client: AsyncClient):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_delete_team_member_no_user_id(test_client: AsyncClient):
+async def test_delete_team_member_no_user_id(default_auth_client: AsyncClient):
     team_id = str(uuid.uuid4())
-    response = await test_client.request(
+    response = await default_auth_client.request(
         method="DELETE", url="/api/v1/team-members", json={"team_id": team_id}
     )
     assert response.status_code == 400
@@ -32,10 +32,10 @@ async def test_delete_team_member_no_user_id(test_client: AsyncClient):
 
 
 @pytest.mark.asyncio(loop_scope="session")
-async def test_delete_team_member_not_found(test_client: AsyncClient):
+async def test_delete_team_member_not_found(default_auth_client: AsyncClient):
     team_id = uuid.uuid4()
     user_id = uuid.uuid4()
-    response = await test_client.request(
+    response = await default_auth_client.request(
         method="DELETE",
         url="/api/v1/team-members",
         json={"team_id": str(team_id), "user_id": str(user_id)},
@@ -45,7 +45,7 @@ async def test_delete_team_member_not_found(test_client: AsyncClient):
 
 @pytest.mark.asyncio(loop_scope="session")
 async def test_delete_team_member_success(
-    test_client: AsyncClient, db_session: AsyncSession
+    default_auth_client: AsyncClient, db_session: AsyncSession
 ):
     team = Team(name="Test Team")
     db_session.add(team)
@@ -70,7 +70,7 @@ async def test_delete_team_member_success(
     team_id = team_member.team_id
     user_id = team_member.user_id
 
-    response = await test_client.request(
+    response = await default_auth_client.request(
         method="DELETE",
         url="/api/v1/team-members",
         json={"team_id": str(team_id), "user_id": str(user_id)},
