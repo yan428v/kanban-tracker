@@ -9,6 +9,11 @@ class CreateTeamMemberRequest(BaseModel):
     user_id: UUID
 
 
+class DeleteTeamMemberRequest(BaseModel):
+    team_id: UUID | None = None
+    user_id: UUID | None = None
+
+
 class TeamMemberResponse(BaseModel):
     id: UUID
     team_id: UUID
