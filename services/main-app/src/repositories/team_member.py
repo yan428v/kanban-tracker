@@ -2,9 +2,11 @@ from uuid import UUID
 
 from fastapi import Depends
 from sqlalchemy import delete, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_session
+from exceptions import TeamMemberConflictError, TeamNotFoundError, UserNotFoundError
 from models import TeamMember
 
 
@@ -13,9 +15,21 @@ class TeamMemberRepository:
         self.db = db
 
     async def create(self, team_member: TeamMember) -> TeamMember:
-        # TODO: check unique constraint error
         self.db.add(team_member)
-        await self.db.commit()
+        try:
+            await self.db.commit()
+        except IntegrityError as e:
+            await self.db.rollback()
+            error_str = str(e.orig)
+            if "uq_team_member_user_id_team_id" in error_str:
+                raise TeamMemberConflictError(
+                    team_member.team_id, team_member.user_id
+                ) from e
+            if "team_id" in error_str and "foreign key" in error_str.lower():
+                raise TeamNotFoundError(team_member.team_id) from e
+            if "user_id" in error_str and "foreign key" in error_str.lower():
+                raise UserNotFoundError(team_member.user_id) from e
+            raise
         await self.db.refresh(team_member)
         return team_member
 
