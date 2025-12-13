@@ -8,6 +8,17 @@ from models import Board, BoardColumn, Comment, Task, Team, User
 
 
 @pytest.mark.asyncio(loop_scope="session")
+async def test_statistics_unauthenticated(app_url: str):
+    client = AsyncClient(base_url=app_url, timeout=30.0)
+
+    response = await client.get("/api/v1/statistics")
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Not authenticated"}
+
+    await client.aclose()
+
+
+@pytest.mark.asyncio(loop_scope="session")
 async def test_entity_counts_no_data(
     default_auth_client: AsyncClient,
     db_session: AsyncSession,
