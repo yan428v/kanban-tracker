@@ -2,7 +2,8 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import Board, BoardColumn, Comment, Task, Team, User
+from auth.security import hash_password
+from models import Board, BoardColumn, Comment, Task, Team, User
 
 
 @pytest.mark.asyncio(loop_scope="session")
@@ -24,7 +25,14 @@ async def test_entity_counts_no_data(test_client: AsyncClient):
 async def test_entity_counts_multiple_entities(
     test_client: AsyncClient, db_session: AsyncSession
 ):
-    users = [User(name="User", email=f"user{i}@example.com") for i in range(3)]
+    users = [
+        User(
+            name="User",
+            email=f"user{i}@example.com",
+            hashed_password=hash_password("password"),
+        )
+        for i in range(3)
+    ]
     for user in users:
         db_session.add(user)
     await db_session.flush()

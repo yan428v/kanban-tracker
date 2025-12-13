@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from exceptions import TeamNotFoundError
 from models import Team
@@ -14,10 +14,20 @@ TEAM_NOT_FOUND_MESSAGE = "Team not found"
 
 @router.get("/teams", response_model=list[TeamResponse])
 async def list_teams(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
     service: TeamService = Depends(get_team_service),
 ):
+    if skip is not None:
+        if skip < 0:
+            skip = 0
+
+    if limit is not None:
+        if limit < 1:
+            limit = 1
+        elif limit > 1000:
+            limit = 1000
+
     teams = await service.get_many(skip=skip, limit=limit)
     return [team_to_response(team) for team in teams]
 

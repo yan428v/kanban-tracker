@@ -4,8 +4,8 @@ from fastapi import Depends
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models import Comment
 from src.core.database import get_session
-from src.models import Comment
 
 
 class CommentRepository:
