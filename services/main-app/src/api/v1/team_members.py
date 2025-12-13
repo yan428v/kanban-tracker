@@ -1,9 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from models import TeamMember
-from schemas.team_member import CreateTeamMemberRequest, TeamMemberResponse
+from schemas.team_member import (
+    CreateTeamMemberRequest,
+    DeleteTeamMemberRequest,
+    TeamMemberResponse,
+)
 from services.team_member import TeamMemberService, get_team_member_service
 
 router = APIRouter()
@@ -54,9 +58,19 @@ async def create_team_member(
 
 @router.delete("/team-members", status_code=status.HTTP_200_OK)
 async def delete_team_member(
-    payload: CreateTeamMemberRequest,
+    payload: DeleteTeamMemberRequest,
     service: TeamMemberService = Depends(get_team_member_service),
 ):
+    if payload.team_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="team_id is required",
+        )
+    if payload.user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="user_id is required",
+        )
     await service.delete(team_id=payload.team_id, user_id=payload.user_id)
 
 

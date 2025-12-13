@@ -15,18 +15,9 @@ async def test_delete_team_member_no_team_id(test_client: AsyncClient):
     response = await test_client.request(
         method="DELETE", url="/api/v1/team-members", json={"user_id": user_id}
     )
-    assert response.status_code == 422
+    assert response.status_code == 400
     data = response.json()
-    assert data == {
-        "detail": [
-            {
-                "type": "missing",
-                "loc": ["body", "team_id"],
-                "msg": "Field required",
-                "input": {"user_id": user_id},
-            }
-        ]
-    }
+    assert data == {"detail": "team_id is required"}
 
 
 @pytest.mark.asyncio(loop_scope="session")
@@ -35,18 +26,9 @@ async def test_delete_team_member_no_user_id(test_client: AsyncClient):
     response = await test_client.request(
         method="DELETE", url="/api/v1/team-members", json={"team_id": team_id}
     )
-    assert response.status_code == 422
+    assert response.status_code == 400
     data = response.json()
-    assert data == {
-        "detail": [
-            {
-                "type": "missing",
-                "loc": ["body", "user_id"],
-                "msg": "Field required",
-                "input": {"team_id": team_id},
-            }
-        ]
-    }
+    assert data == {"detail": "user_id is required"}
 
 
 @pytest.mark.asyncio(loop_scope="session")
