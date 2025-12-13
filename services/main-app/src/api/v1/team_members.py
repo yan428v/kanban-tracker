@@ -52,13 +52,12 @@ async def create_team_member(
     return team_member_to_response(member)
 
 
-@router.delete("/team-members", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/team-members", status_code=status.HTTP_200_OK)
 async def delete_team_member(
-    team_id: UUID,
-    user_id: UUID,
+    payload: CreateTeamMemberRequest,
     service: TeamMemberService = Depends(get_team_member_service),
 ):
-    await service.delete(team_id=team_id, user_id=user_id)
+    await service.delete(team_id=payload.team_id, user_id=payload.user_id)
 
 
 def team_member_to_response(member: TeamMember) -> TeamMemberResponse:
