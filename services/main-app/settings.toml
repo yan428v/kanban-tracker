@@ -11,3 +11,10 @@ db_user = "user"
 db_password = "password"
 db_host = "localhost"
 db_port = 5432
+
+
+[auth_settings]
+sekret_key = "mipt"
+algorithm = "HS256"
+access_token_expire_minutes = 30
+refresh_token_expire_days = 30
