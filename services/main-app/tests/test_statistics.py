@@ -33,40 +33,36 @@ async def test_entity_counts_multiple_entities(
         )
         for i in range(3)
     ]
-    for user in users:
-        db_session.add(user)
+    db_session.add_all(users)
     await db_session.flush()
 
     teams = [Team(name="Team") for _ in range(2)]
-    for team in teams:
-        db_session.add(team)
+    db_session.add_all(teams)
     await db_session.flush()
 
     boards = [Board(title="Board", owner_id=users[0].id) for _ in range(4)]
-    for board in boards:
-        db_session.add(board)
+    db_session.add_all(boards)
     await db_session.flush()
 
-    columns = []
-    for i, board in enumerate(boards):
-        column = BoardColumn(title="Column", board_id=board.id, position=i)
-        db_session.add(column)
-        columns.append(column)
+    columns = [
+        BoardColumn(title="Column", board_id=board.id, position=i)
+        for i, board in enumerate(boards)
+    ]
+    db_session.add_all(columns)
     await db_session.flush()
 
-    tasks = []
-    for column in columns:
-        task = Task(title="Task", user_id=users[0].id, column_id=column.id)
-        db_session.add(task)
-        tasks.append(task)
+    tasks = [
+        Task(title="Task", user_id=users[0].id, column_id=column.id)
+        for column in columns
+    ]
+    db_session.add_all(tasks)
     await db_session.flush()
 
     comments = [
         Comment(body="Comment", user_id=users[0].id, task_id=tasks[0].id)
         for _ in range(5)
     ]
-    for comment in comments:
-        db_session.add(comment)
+    db_session.add_all(comments)
     await db_session.commit()
 
     response = await test_client.get("/api/v1/statistics")
