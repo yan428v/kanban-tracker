@@ -11,12 +11,25 @@ router = APIRouter()
 
 @router.get("/team-members", response_model=list[TeamMemberResponse])
 async def list_team_members(
-    skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=0, le=1000),
-    team_id: UUID | None = None,
-    user_id: UUID | None = None,
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
+    team_id: UUID | None = Query(None),
+    user_id: UUID | None = Query(None),
     service: TeamMemberService = Depends(get_team_member_service),
 ):
+    if skip is None:
+        skip = 0
+    elif skip < 0:
+        skip = 0
+
+    if limit is None:
+        limit = 100
+    else:
+        if limit < 1:
+            limit = 100
+        elif limit > 1000:
+            limit = 1000
+
     members = await service.get_many(
         skip=skip,
         limit=limit,

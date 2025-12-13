@@ -90,22 +90,11 @@ async def test_limit_0(test_client: AsyncClient, db_session: AsyncSession):
     db_session.add(team1)
     db_session.add(team2)
     await db_session.commit()
-    await db_session.refresh(team1)
 
     response = await test_client.get("/api/v1/teams?limit=0")
     assert response.status_code == 200
     data = response.json()
-
-    expected = [
-        {
-            "id": str(team1.id),
-            "name": team1.name,
-            "description": team1.description,
-            "created_at": team1.created_at.isoformat(),
-            "updated_at": team1.updated_at.isoformat(),
-        }
-    ]
-    assert data == expected
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio(loop_scope="session")

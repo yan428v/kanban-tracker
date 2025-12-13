@@ -18,13 +18,16 @@ async def list_teams(
     limit: int | None = Query(None),
     service: TeamService = Depends(get_team_service),
 ):
-    if skip is not None:
-        if skip < 0:
-            skip = 0
+    if skip is None:
+        skip = 0
+    elif skip < 0:
+        skip = 0
 
-    if limit is not None:
+    if limit is None:
+        limit = 100
+    else:
         if limit < 1:
-            limit = 1
+            limit = 100
         elif limit > 1000:
             limit = 1000
 
