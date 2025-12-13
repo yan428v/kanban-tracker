@@ -5,6 +5,7 @@ from .auth_schemas import (
     UserLogin,
     UserRegister,
 )
+from .comment import CommentCreate, CommentOut, CommentUpdate
 from .team import CreateTeamRequest, TeamResponse, UpdateTeamRequest
 from .team_member import CreateTeamMemberRequest, TeamMemberResponse
 from .user_schema import UserCreate, UserResponse, UserUpdate
@@ -23,4 +24,7 @@ __all__ = [
     "TokenPair",
     "RefreshRequest",
     "LogoutRequest",
+    "CommentCreate",
+    "CommentUpdate",
+    "CommentOut",
 ]

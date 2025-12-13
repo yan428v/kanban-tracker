@@ -24,3 +24,10 @@ class InvalidCredentialsError(Exception):
 
     def __str__(self):
         return self.detail
+class CommentNotFoundError(Exception):
+    def __init__(self, comment_id):
+        self.comment_id = comment_id
+        super().__init__()
+
+    def __str__(self):
+        return f"Comment {self.comment_id} not found"

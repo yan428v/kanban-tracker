@@ -1,0 +1,53 @@
+from uuid import UUID
+
+from fastapi import Depends
+
+from models import Task
+from repositories.task import TaskRepository, get_task_reposetory
+from schemas.task import CreateTaskRequest, UpdateTaskRequest
+
+
+class TaskService:
+    def __init__(self, repository: TaskRepository):
+        self.repository = repository
+
+    async def get(self, task_id: UUID) -> Task | None:
+        return await self.repository.get_by_id(task_id)
+
+    async def get_many(self, skip: int = 0, limit: int = 100) -> list[Task]:
+        return await self.repository.get_all(skip=skip, limit=limit)
+
+    async def create(self, task_data: CreateTaskRequest) -> Task:
+        data = {
+            "title": task_data.title,
+            "description": task_data.description,
+            "status": task_data.status,
+            "due_date": task_data.due_date,
+            "user_id": task_data.user_id,
+            "column_id": task_data.column_id,
+        }
+        return await self.repository.create(data)
+
+    async def update(self, task_id: UUID, task_data: UpdateTaskRequest) -> Task:
+        data = {}
+        if task_data.title is not None:
+            data["title"] = task_data.title
+        if task_data.description is not None:
+            data["description"] = task_data.description
+        if task_data.status is not None:
+            data["status"] = task_data.status
+        if task_data.due_date is not None:
+            data["due_date"] = task_data.due_date
+        if task_data.column_id is not None:
+            data["column_id"] = task_data.column_id
+
+        return await self.repository.update(task_id, data)
+
+    async def delete(self, task_id: UUID) -> bool:
+        return await self.repository.delete(task_id)
+
+
+async def get_task_service(
+    repository: TaskRepository = Depends(get_task_reposetory),
+) -> TaskService:
+    return TaskService(repository)
