@@ -61,3 +61,12 @@ alembic upgrade head
 - head - до самой новой миграции
 
 для применения миграций в новом репе та же команда
+
+##### Тесты
+```
+docker compose up main_db -d
+
+PYTHONPATH=src uvicorn src.main:app
+
+APP_URL=http://localhost:8000 DB_CONNECTION_STRING=user:password@localhost:5432/postgres PYTHONPATH=src poetry run pytest
+```
