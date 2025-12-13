@@ -47,4 +47,3 @@ async def get_statistics_service(
     repository: StatisticsRepository = Depends(get_statistics_repository),
 ) -> StatisticsService:
     return StatisticsService(repository)
-
