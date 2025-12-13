@@ -11,6 +11,8 @@ class User(Base, BaseModelMixin):
 
     email = Column(String, nullable=False, unique=True)
 
+    hashed_password = Column(String, nullable=False)
+
     tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan")
 
     comments = relationship(
@@ -26,6 +28,10 @@ class User(Base, BaseModelMixin):
     permission = relationship("Permission", back_populates="user")
 
     task_members = relationship("TaskMember", back_populates="user")
+
+    refresh_tokens = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<User(id={self.id}, name='{self.name}', email={self.email})>"
