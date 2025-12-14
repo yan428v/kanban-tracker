@@ -9,22 +9,40 @@ services:
     ports:
       - "${MAIN_DB_PORT}:5432"
     volumes:
-      - main_db_data:/var/lib/postgresql    # ← Changed from /var/lib/postgresql/data
+      - main_db_data:/var/lib/postgresql # ← Changed from /var/lib/postgresql/data
 
-  auth_db:
-    container_name: auth_db
-    image: postgres:latest
+  # auth_db:
+  #   container_name: auth_db
+  #   image: postgres:latest
+  #   environment:
+  #     POSTGRES_DB: ${AUTH_DB_NAME}
+  #     POSTGRES_USER: ${AUTH_DB_USER}
+  #     POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+  #   ports:
+  #     - "${AUTH_DB_PORT}:5432"
+  #   volumes:
+  #     - auth_db_data:/var/lib/postgresql # ← Changed from /var/lib/postgresql/data
+
+  main-app:
+    build:
+      context: ./services/main-app
+      dockerfile: Dockerfile
+    container_name: main-app
+    command: ["uvicorn", "src.main:app", "--host", "${APP_HOST}", "--port", "${MAIN_APP_PORT}"]
     environment:
-      POSTGRES_DB: ${AUTH_DB_NAME}
-      POSTGRES_USER: ${AUTH_DB_USER}
-      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+      DB_SETTINGS__DB_NAME: ${MAIN_DB_NAME}
+      DB_SETTINGS__DB_USER: ${MAIN_DB_USER}
+      DB_SETTINGS__DB_PASSWORD: ${MAIN_DB_PASSWORD}
+      DB_SETTINGS__DB_HOST: main_db
+      DB_SETTINGS__DB_PORT: 5432
     ports:
-      - "${AUTH_DB_PORT}:5432"
+      - "${MAIN_APP_PORT}:${MAIN_APP_PORT}"
+    depends_on:
+      - main_db
     volumes:
-      - auth_db_data:/var/lib/postgresql    # ← Changed from /var/lib/postgresql/data
+      - ./services/main-app/src:/code/src
+      - ./services/main-app/settings.toml:/code/settings.toml
 
 volumes:
   main_db_data:
   auth_db_data:
-
-# run --name pg_test -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres:latest
