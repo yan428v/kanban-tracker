@@ -11,7 +11,12 @@ from api.v1.tasks import router as tasks_router
 from api.v1.team_members import router as team_members_router
 from api.v1.teams import router as teams_router
 from core.config import settings
-from exceptions import InvalidCredentialsError
+from exceptions import (
+    InvalidCredentialsError,
+    TeamMemberConflictError,
+    TeamNotFoundError,
+    UserNotFoundError,
+)
 
 app = FastAPI(
     title=settings.app_settings.app_name,
@@ -25,6 +30,30 @@ async def invalid_credentials_handler(request, exc: InvalidCredentialsError):
         status_code=401,
         content={"detail": str(exc)},
         headers={"WWW-Authenticate": "Bearer"},
+    )
+
+
+@app.exception_handler(TeamMemberConflictError)
+async def team_member_conflict_handler(request, exc: TeamMemberConflictError):
+    return JSONResponse(
+        status_code=409,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(TeamNotFoundError)
+async def team_not_found_handler(request, exc: TeamNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(UserNotFoundError)
+async def user_not_found_handler(request, exc: UserNotFoundError):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": str(exc)},
     )
 
 

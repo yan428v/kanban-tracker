@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql.base import UUID
 from sqlalchemy.orm import relationship
 
-from models import Base, BaseModelMixin
+from .base import Base, BaseModelMixin
 
 
 class RefreshToken(Base, BaseModelMixin):
