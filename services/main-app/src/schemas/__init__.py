@@ -6,6 +6,7 @@ from .auth_schemas import (
     UserRegister,
 )
 from .comment import CommentCreate, CommentOut, CommentUpdate
+from .task_member import CreateTaskMemberRequest, TaskMemberResponse
 from .team import CreateTeamRequest, TeamResponse, UpdateTeamRequest
 from .team_member import CreateTeamMemberRequest, TeamMemberResponse
 from .user_schema import UserCreate, UserResponse, UserUpdate
@@ -16,6 +17,8 @@ __all__ = [
     "TeamResponse",
     "CreateTeamMemberRequest",
     "TeamMemberResponse",
+    "CreateTaskMemberRequest",
+    "TaskMemberResponse",
     "UserCreate",
     "UserResponse",
     "UserUpdate",
