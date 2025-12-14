@@ -25,8 +25,6 @@ class User(Base, BaseModelMixin):
 
     boards = relationship("Board", back_populates="owner", cascade="all, delete-orphan")
 
-    permission = relationship("Permission", back_populates="user")
-
     task_members = relationship("TaskMember", back_populates="user")
 
     refresh_tokens = relationship(

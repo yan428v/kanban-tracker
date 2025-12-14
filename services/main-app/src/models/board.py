@@ -28,7 +28,3 @@ class Board(Base, BaseModelMixin):
     )
 
     team = relationship("Team", back_populates="boards")
-
-    permissions = relationship(
-        "Permission", back_populates="board", cascade="all, delete-orphan"
-    )
