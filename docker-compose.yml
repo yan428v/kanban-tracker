@@ -28,7 +28,7 @@ services:
       context: ./services/main-app
       dockerfile: Dockerfile
     container_name: main-app
-    command: ["uvicorn", "src.main:app", "--host", "${APP_HOST}", "--port", "${MAIN_APP_PORT}"]
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "${MAIN_APP_PORT}"]
     environment:
       DB_SETTINGS__DB_NAME: ${MAIN_DB_NAME}
       DB_SETTINGS__DB_USER: ${MAIN_DB_USER}
