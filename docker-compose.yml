@@ -23,7 +23,7 @@ services:
   #   volumes:
   #     - auth_db_data:/var/lib/postgresql # ← Changed from /var/lib/postgresql/data
 
-  main-app:
+  main_app:
     build:
       context: ./services/main-app
       dockerfile: Dockerfile
