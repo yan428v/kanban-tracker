@@ -2,7 +2,6 @@ from .base import Base, BaseModelMixin
 from .board import Board
 from .column import BoardColumn
 from .comment import Comment
-from .permission import Permission
 from .refresh_token import RefreshToken
 from .task import Task, TaskStatus
 from .task_members import TaskMember
@@ -22,6 +21,5 @@ __all__ = [
     "Board",
     "BoardColumn",
     "TaskMember",
-    "Permission",
     "RefreshToken",
 ]
