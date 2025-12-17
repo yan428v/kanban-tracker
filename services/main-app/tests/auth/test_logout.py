@@ -54,6 +54,9 @@ class TestLogout:
             select(RefreshToken).where(RefreshToken.token_jti == jti)
         )
         token_in_db = result.scalar_one()
+
+        await db_session.refresh(token_in_db)
+
         assert token_in_db.is_revoked is True
 
     @pytest.mark.asyncio(loop_scope="session")
