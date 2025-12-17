@@ -64,7 +64,5 @@ alembic upgrade head
 
 ##### Тесты
 ```
-docker compose up -d
-
-APP_URL=http://localhost:8000 DB_CONNECTION_STRING=user:password@localhost:5432/postgres PYTHONPATH=src poetry run pytest
+poetry run pytest
 ```
