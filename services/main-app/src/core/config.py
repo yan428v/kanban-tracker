@@ -1,7 +1,12 @@
+from pathlib import Path
+
 from dynaconf import Dynaconf
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+SETTINGS_FILE = BASE_DIR / "settings.toml"
+
 settings = Dynaconf(
-    settings_files=["settings.toml", ".env"],
+    settings_files=[str(SETTINGS_FILE), ".env"],
     envvar_prefix=False,
 )
 

@@ -29,6 +29,7 @@ pre-commit = "^4.0.1"
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.2"
 httpx = "^0.28.1"
+testcontainers = {extras = ["postgres"], version = "^4.13.3"}
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]
@@ -77,3 +78,4 @@ asyncio_default_fixture_loop_scope = "session"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v --tb=short"
+pythonpath = ["src"]
