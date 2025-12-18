@@ -21,12 +21,7 @@ async def test_boards_routes_unauthenticated(http_client: AsyncClient):
     for method, url in routes:
         response = await http_client.request(method, url)
 
-        # Допускаем либо 401 (требуется auth), либо 404 (роут не реализован)
-        assert response.status_code in (401, 404), (
-            f"{method} {url} should return 401 (auth required) or 404 (not implemented), "
+        assert response.status_code == 401, (
+            f"{method} {url} should return 401 (auth required), "
             f"but got {response.status_code}"
-        )
-
-        assert response.status_code >= 400, (
-            f"{method} {url} should not succeed without authentication"
         )
