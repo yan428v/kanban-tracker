@@ -1,8 +1,9 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from models import Board
+from auth.dependencies import get_current_user
+from models import Board, User
 from schemas.board import BoardResponse, CreateBoardRequest, UpdateBoardRequest
 from services.board import BoardService, get_board_service
 
@@ -13,10 +14,21 @@ BOARD_NOT_FOUND_MESSAGE = "Board not found"
 
 @router.get("/boards", response_model=list[BoardResponse])
 async def list_boards(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
     service: BoardService = Depends(get_board_service),
+    current_user: User = Depends(get_current_user),
 ):
+    if skip is None:
+        skip = 0
+    elif skip < 0:
+        skip = 0
+
+    if limit is None:
+        limit = 100
+    else:
+        limit = min(limit, 1000)
+
     boards = await service.get_many(skip=skip, limit=limit)
     return [board_to_response(board) for board in boards]
 
@@ -25,6 +37,7 @@ async def list_boards(
 async def get_board(
     board_id: UUID,
     service: BoardService = Depends(get_board_service),
+    current_user: User = Depends(get_current_user),
 ):
     board = await service.get(board_id)
     if not board:
@@ -38,6 +51,7 @@ async def get_board(
 async def create_board(
     board_data: CreateBoardRequest,
     service: BoardService = Depends(get_board_service),
+    current_user: User = Depends(get_current_user),
 ):
     board = await service.create(board_data)
     return board_to_response(board)
@@ -48,6 +62,7 @@ async def update_board(
     board_id: UUID,
     board_data: UpdateBoardRequest,
     service: BoardService = Depends(get_board_service),
+    current_user: User = Depends(get_current_user),
 ):
     board = await service.update(board_id, board_data)
     if not board:
@@ -61,6 +76,7 @@ async def update_board(
 async def delete_board(
     board_id: UUID,
     service: BoardService = Depends(get_board_service),
+    current_user: User = Depends(get_current_user),
 ):
     result = await service.delete(board_id)
     if not result:
