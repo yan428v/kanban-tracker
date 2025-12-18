@@ -1,8 +1,9 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from models import BoardColumn
+from auth.dependencies import get_current_user
+from models import BoardColumn, User
 from schemas.column import ColumnResponse, CreateColumnRequest, UpdateColumnRequest
 from services.column import ColumnService, get_column_service
 
@@ -13,10 +14,21 @@ COLUMN_NOT_FOUND_MESSAGE = "Column not found"
 
 @router.get("/columns", response_model=list[ColumnResponse])
 async def list_columns(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
     service: ColumnService = Depends(get_column_service),
+    current_user: User = Depends(get_current_user),
 ):
+    if skip is None:
+        skip = 0
+    elif skip < 0:
+        skip = 0
+
+    if limit is None:
+        limit = 100
+    else:
+        limit = min(limit, 1000)
+
     columns = await service.get_many(skip=skip, limit=limit)
     return [column_to_response(column) for column in columns]
 
@@ -25,6 +37,7 @@ async def list_columns(
 async def get_column(
     column_id: UUID,
     service: ColumnService = Depends(get_column_service),
+    current_user: User = Depends(get_current_user),
 ):
     column = await service.get(column_id)
     if not column:
@@ -40,6 +53,7 @@ async def get_column(
 async def create_column(
     column_data: CreateColumnRequest,
     service: ColumnService = Depends(get_column_service),
+    current_user: User = Depends(get_current_user),
 ):
     column = await service.create(column_data)
     return column_to_response(column)
@@ -50,6 +64,7 @@ async def update_column(
     column_id: UUID,
     column_data: UpdateColumnRequest,
     service: ColumnService = Depends(get_column_service),
+    current_user: User = Depends(get_current_user),
 ):
     column = await service.update(column_id, column_data)
     if not column:
@@ -63,6 +78,7 @@ async def update_column(
 async def delete_column(
     column_id: UUID,
     service: ColumnService = Depends(get_column_service),
+    current_user: User = Depends(get_current_user),
 ):
     result = await service.delete(column_id)
     if not result:

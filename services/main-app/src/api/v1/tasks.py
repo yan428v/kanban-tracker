@@ -1,8 +1,9 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from models import Task
+from auth.dependencies import get_current_user
+from models import Task, User
 from schemas.task import CreateTaskRequest, TaskResponse, UpdateTaskRequest
 from services.task import TaskService, get_task_service
 
@@ -13,10 +14,21 @@ TASK_NOT_FOUND_MESSAGE = "Task not found"
 
 @router.get("/tasks", response_model=list[TaskResponse])
 async def list_tasks(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
     service: TaskService = Depends(get_task_service),
+    current_user: User = Depends(get_current_user),
 ):
+    if skip is None:
+        skip = 0
+    elif skip < 0:
+        skip = 0
+
+    if limit is None:
+        limit = 100
+    else:
+        limit = min(limit, 1000)
+
     tasks = await service.get_many(skip=skip, limit=limit)
     return [task_to_response(task) for task in tasks]
 
@@ -25,6 +37,7 @@ async def list_tasks(
 async def get_task(
     task_id: UUID,
     service: TaskService = Depends(get_task_service),
+    current_user: User = Depends(get_current_user),
 ):
     task = await service.get(task_id)
     if not task:
@@ -38,6 +51,7 @@ async def get_task(
 async def create_task(
     task_data: CreateTaskRequest,
     service: TaskService = Depends(get_task_service),
+    current_user: User = Depends(get_current_user),
 ):
     task = await service.create(task_data)
     return task_to_response(task)
@@ -48,6 +62,7 @@ async def update_task(
     task_id: UUID,
     task_data: UpdateTaskRequest,
     service: TaskService = Depends(get_task_service),
+    current_user: User = Depends(get_current_user),
 ):
     task = await service.update(task_id, task_data)
     if not task:
@@ -61,6 +76,7 @@ async def update_task(
 async def delete_task(
     task_id: UUID,
     service: TaskService = Depends(get_task_service),
+    current_user: User = Depends(get_current_user),
 ):
     result = await service.delete(task_id)
     if not result:
