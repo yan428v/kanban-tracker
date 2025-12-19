@@ -4,18 +4,24 @@ from fastapi import Depends
 
 from models import Task
 from repositories.task import TaskRepository, get_task_reposetory
+from repositories.notification import NotificationRepository, get_notification_reposetory
 from schemas.task import CreateTaskRequest, UpdateTaskRequest
 
 
 class TaskService:
-    def __init__(self, repository: TaskRepository):
-        self.repository = repository
+    def __init__(
+        self,
+        task_repository: TaskRepository,
+        notification_repository: NotificationRepository
+    ):
+        self.task_repository = task_repository
+        self.notification_repository = notification_repository
 
     async def get(self, task_id: UUID) -> Task | None:
-        return await self.repository.get_by_id(task_id)
+        return await self.task_repository.get_by_id(task_id)
 
     async def get_many(self, skip: int = 0, limit: int = 100) -> list[Task]:
-        return await self.repository.get_all(skip=skip, limit=limit)
+        return await self.task_repository.get_all(skip=skip, limit=limit)
 
     async def create(self, task_data: CreateTaskRequest) -> Task:
         data = {
@@ -26,10 +32,16 @@ class TaskService:
             "user_id": task_data.user_id,
             "column_id": task_data.column_id,
         }
-        return await self.repository.create(data)
+        task = await self.task_repository.create(data)
+        await self.notification_repository.create({
+            "message": f"Task `{task.title}` has been created",
+            "user_id": task.user_id,
+            "task_id": task.id
+        })
+        return task
 
     async def update(self, task_id: UUID, task_data: UpdateTaskRequest) -> Task:
-        data = {}
+        data, notification_data = {}
         if task_data.title is not None:
             data["title"] = task_data.title
         if task_data.description is not None:
@@ -41,13 +53,27 @@ class TaskService:
         if task_data.column_id is not None:
             data["column_id"] = task_data.column_id
 
-        return await self.repository.update(task_id, data)
+        task = await self.task_repository.update(task_id, data)
+        await self.notification_repository.create({
+            "message": f"Task `{task.title}` has been updated",
+            "user_id": task.user_id,
+            "task_id": task_id
+        })
+        await self.notification_repository.update()
+        return task
 
     async def delete(self, task_id: UUID) -> bool:
-        return await self.repository.delete(task_id)
+        task = self.task_repository.get_by_id(task_id)
+        await self.notification_repository.create({
+            "message": f"Task `{task.title}` has been deleted",
+            "user_id": task.user_id,
+            "task_id": task_id
+        })
+        await self.task_repository.delete(task_id)
 
 
 async def get_task_service(
-    repository: TaskRepository = Depends(get_task_reposetory),
+    task_repository: TaskRepository = Depends(get_task_reposetory),
+    notification_repository: NotificationRepository = Depends(get_notification_reposetory)
 ) -> TaskService:
-    return TaskService(repository)
+    return TaskService(task_repository, notification_repository)

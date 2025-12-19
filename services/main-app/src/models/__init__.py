@@ -9,6 +9,7 @@ from .task_members import TaskMember
 from .team import Team
 from .team_member import TeamMember
 from .user import User
+from .notification import Notification
 
 __all__ = [
     "Base",
@@ -24,4 +25,5 @@ __all__ = [
     "TaskMember",
     "Permission",
     "RefreshToken",
+    "Notification"
 ]
