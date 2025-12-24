@@ -263,3 +263,10 @@ async def cleanup_db(db_session: AsyncSession):
     for table in tables:
         await db_session.execute(text(f'TRUNCATE TABLE "{table}" CASCADE'))
     await db_session.commit()
+
+
+@pytest.fixture
+async def test_client(app_url):
+    client = AsyncClient(base_url=app_url, timeout=30.0)
+    async with client:
+        yield client
